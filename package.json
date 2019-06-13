@@ -1,0 +1,27 @@
+{
+  "name": "umi-plugin-layout",
+  "version": "1.0.0",
+  "description": "解决 umi 只有一个模板 和 所有页面都要使用一个模板的问题",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bldf/umi-plugin-layout.git"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.134",
+    "umi-types": "^0.3.8"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11",
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bldf/umi-plugin-layout/issues"
+  },
+  "homepage": "https://github.com/bldf/umi-plugin-layout#readme"
+}
