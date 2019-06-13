@@ -170,9 +170,7 @@ const set_layoutRoute = (routes:IRoute[],allRoutes:IRoute[])=>{
             if (!checkArr[0].routes ) {
               checkArr[0].routes = [] ;
               checkArr[0].exact = false ;
-          }else{
-            throw new Error('有 l_ 开始的路由， 但是没有 对应的父级');
-        }
+            }
               checkArr[0].routes.splice(0, 0, d);
           }
           if( remove(routes, (ck:IRoute) =>ck.path === d.path).length ==1){
