@@ -18,8 +18,11 @@
     "lodash": "^4.17.11"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": {
+    "name": "bldf",
+    "email": "bldf@qq.com"
+  },
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/bldf/umi-plugin-layout/issues"
   },
