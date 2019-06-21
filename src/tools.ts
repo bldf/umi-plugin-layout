@@ -26,7 +26,7 @@ const addChildRoutes = (route:IRoute, ro:IRoute) : IRoute => {
   if (route.routes) {
     ro.path = ro.path || '';
     ro.path = ro.path.replace('/layout_', '/');
-    route.routes.push(ro);
+    route.routes.splice(0, 0, ro);
   }
   return route ; 
 }
@@ -42,7 +42,7 @@ const initParentRoutes = (routes:IRoute[], subPath:string) : IRoute=> {
   let route :IRoute = {
     path: subPath,
     component: path.resolve('src/layouts/') + subPath,
-    routes: []
+    routes: [routes[routes.length-1]]
   };
   routes.splice(0, 0, route)
   return route;
@@ -168,7 +168,7 @@ const set_layoutRoute = (routes:IRoute[],allRoutes:IRoute[])=>{
           findRouteByPath(allRoutes,ar.join('/'),checkArr)
           if(checkArr.length){ // 如果找到了
             if (!checkArr[0].routes ) {
-              checkArr[0].routes = [] ;
+              checkArr[0].routes = [allRoutes[allRoutes.length-1]] ;
               checkArr[0].exact = false ;
             }
               checkArr[0].routes.splice(0, 0, d);
@@ -191,16 +191,19 @@ const set_layoutRoute = (routes:IRoute[],allRoutes:IRoute[])=>{
  * @returns
  */
 const set_layoutOrder = function (routes:IRoute[]) {
-  let newRoutes = [] , newRoutes2=[];
+  var newRoutes = [], newRoutes2 = [],newRoutes3 = [];
   for (var a = 0, d; d = routes[a]; a++) {
-      if(d.routes){
-          newRoutes2.push(d) ; 
+      if (d.routes) {
+          newRoutes2.push(d);
+      }
+      else if(typeof d.path != 'undefined'){
+          newRoutes.push(d);
       }else{
-          newRoutes.push(d) ;
+          newRoutes3.push(d);
       }
   }
-  routes = newRoutes.concat(newRoutes2) ;
-  return routes ;
+  routes = newRoutes.concat(newRoutes2).concat(newRoutes3);
+  return routes;
 }
 
 module.exports = {

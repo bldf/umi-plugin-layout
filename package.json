@@ -1,11 +1,15 @@
 {
   "name": "umi-plugin-layout",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "解决 umi 只有一个模板 和 所有页面都要使用一个模板的问题",
   "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node ./unit/tools.spec.js",
     "build":"tsc",
+    "dev":"tsc -w",
     "prepublish": "npm run build"
   },
   "repository": {
