@@ -1,6 +1,7 @@
-import remove from "lodash/remove"  ; 
-import { IApi,IRoute } from 'umi-types';
-const path  = require('path')
+import remove from "lodash/remove";
+import orderBy from "lodash/orderBy";
+import { IApi, IRoute } from 'umi-types';
+const path = require('path')
 
 /**
  *判断路由是否包含某个path, 只是做外层验证，子路由不做验证
@@ -9,7 +10,7 @@ const path  = require('path')
  * @param {string} path
  * @returns {(IRoute | boolean)}
  */
-const checkRoutesOuterHashPath = (route:IRoute, path:string) :IRoute | boolean => {
+const checkRoutesOuterHashPath = (route: IRoute, path: string): IRoute | boolean => {
   for (let a = 0, d; d = route[a]; a++) {
     if (d.path === path) {
       return d;
@@ -22,13 +23,13 @@ const checkRoutesOuterHashPath = (route:IRoute, path:string) :IRoute | boolean =
  * @param {*} route 
  * @param {*} ro 
  */
-const addChildRoutes = (route:IRoute, ro:IRoute) : IRoute => {
+const addChildRoutes = (route: IRoute, ro: IRoute): IRoute => {
   if (route.routes) {
     ro.path = ro.path || '';
     ro.path = ro.path.replace('/layout_', '/');
     route.routes.splice(0, 0, ro);
   }
-  return route ; 
+  return route;
 }
 
 /**
@@ -38,11 +39,11 @@ const addChildRoutes = (route:IRoute, ro:IRoute) : IRoute => {
  * @param {string} subPath
  * @returns {IRoute}
  */
-const initParentRoutes = (routes:IRoute[], subPath:string) : IRoute=> {
-  let route :IRoute = {
+const initParentRoutes = (routes: IRoute[], subPath: string): IRoute => {
+  let route: IRoute = {
     path: subPath,
     component: path.resolve('src/layouts/') + subPath,
-    routes: [routes[routes.length-1]]
+    routes: [routes[routes.length - 1]]
   };
   routes.splice(0, 0, route)
   return route;
@@ -55,44 +56,44 @@ const initParentRoutes = (routes:IRoute[], subPath:string) : IRoute=> {
  * @param {IRoute[]} allRoutes
  * @returns
  */
-const setBlankRoutes = (routes:IRoute[],allRoutes:IRoute[]) => {
-  for (var a = 0, d:IRoute; d = routes[a]; a++) {
+const setBlankRoutes = (routes: IRoute[], allRoutes: IRoute[]) => {
+  for (var a = 0, d: IRoute; d = routes[a]; a++) {
     let path = d.path || '';
     if (d.path) {
-        let ar = path.split('/'), lastPath = ar[ar.length - 1];
-        if (lastPath.substring(0, 2) == 'b_') {
-          ar[ar.length - 1] = lastPath.substring(2);
-          d.path = ar.join('/');
-          allRoutes.splice(0, 0, d);
-          if( remove(routes, (ck:IRoute) =>ck.path === d.path).length ==1){
-            a-- ;
-          }
+      let ar = path.split('/'), lastPath = ar[ar.length - 1];
+      if (lastPath.substring(0, 2) == 'b_') {
+        ar[ar.length - 1] = lastPath.substring(2);
+        d.path = ar.join('/');
+        allRoutes.splice(0, 0, d);
+        if (remove(routes, (ck: IRoute) => ck.path === d.path).length == 1) {
+          a--;
         }
+      }
     }
     if (d.routes) {
-      setBlankRoutes(d.routes,allRoutes);
+      setBlankRoutes(d.routes, allRoutes);
     }
   }
   return routes;
 }
 
- /**
- *
- *修改所有路由中，只要是包含 layout_op , 将该文件夹下的所有路由的layout设置为op, op只是一个例子 ， 具体名称自己命名
- * 按照约定 layout_op 只能在 pages统计目录下边，否则无效
- * @param {IRoute[]} routes
- * @param {IRoute[]} allRoutes
- */
-const updateRouteLayout = ((routes:IRoute[],allRoutes:IRoute[]) => {
-  for (var a = 0, d:IRoute; d = routes[a]; a++) {
+/**
+*
+*修改所有路由中，只要是包含 layout_op , 将该文件夹下的所有路由的layout设置为op, op只是一个例子 ， 具体名称自己命名
+* 按照约定 layout_op 只能在 pages统计目录下边，否则无效
+* @param {IRoute[]} routes
+* @param {IRoute[]} allRoutes
+*/
+const updateRouteLayout = ((routes: IRoute[], allRoutes: IRoute[]) => {
+  for (var a = 0, d: IRoute; d = routes[a]; a++) {
     if (d.path) {
       if (d.path.substring(0, 8) === "/layout_") {//如果是使用了模板
-        let str : string = '/'+(d.path.replace('/layout_', '').replace(/\/.*/gi, '')); //截取layout后的字符串, /layout_opc/order 比如截取后为： "opc"
+        let str: string = '/' + (d.path.replace('/layout_', '').replace(/\/.*/gi, '')); //截取layout后的字符串, /layout_opc/order 比如截取后为： "opc"
         let route = checkRoutesOuterHashPath(allRoutes, str);
         !route && (route = initParentRoutes(allRoutes, str));
         addChildRoutes(route as IRoute, d);
-        if( remove(routes, (ch:IRoute) =>ch.path == d.path).length ==1 ){
-          a-- ;
+        if (remove(routes, (ch: IRoute) => ch.path == d.path).length == 1) {
+          a--;
         }
       }
     }
@@ -109,7 +110,7 @@ const updateRouteLayout = ((routes:IRoute[],allRoutes:IRoute[]) => {
  * @param {IRoute[]} routes
  * @param {string} prefix
  */
-const updatePrefix = (routes:IRoute[], prefix:string) => {
+const updatePrefix = (routes: IRoute[], prefix: string) => {
   for (var a = 0, d; d = routes[a]; a++) {
     if (d.path) {
       let arr = d.path.split('/')
@@ -132,19 +133,19 @@ const updatePrefix = (routes:IRoute[], prefix:string) => {
  * @param {string} path 要查找的路由路径
  * @param {IRoute[]} reRoutes 查找成功后返回的空数组
  */
-const findRouteByPath = (routes:IRoute[],path:string,reRoutes:IRoute[])=>{
-  for (var a = 0, d:IRoute; d = routes[a]; a++) {
-      if(d.path === path){
-        if (!d.component || (d.component && !~d.component.indexOf('index'))){
-            throw new Error ('有 l_ 开始的路由， 但是没有 index 组件 因为 l_ 默认是找 index 或者 b_index 作为模板使用的') ;
-        }
-        reRoutes.push(d) ;
-        break ;
+const findRouteByPath = (routes: IRoute[], path: string, reRoutes: IRoute[]) => {
+  for (var a = 0, d: IRoute; d = routes[a]; a++) {
+    if (d.path === path) {
+      if (!d.component || (d.component && !~d.component.indexOf('index'))) {
+        throw new Error('有 l_ 开始的路由， 但是没有 index 组件 因为 l_ 默认是找 index 或者 b_index 作为模板使用的');
       }
-      if(d.routes){
-        findRouteByPath(d.routes,path,reRoutes);
-      }
-  }  
+      reRoutes.push(d);
+      break;
+    }
+    if (d.routes) {
+      findRouteByPath(d.routes, path, reRoutes);
+    }
+  }
 }
 
 
@@ -156,63 +157,70 @@ const findRouteByPath = (routes:IRoute[],path:string,reRoutes:IRoute[])=>{
  * @param {IRoute[]} routes
  * @param {IRoute[]} allRoutes
  */
-const set_layoutRoute = (routes:IRoute[],allRoutes:IRoute[])=>{
-  for (var a = 0, d:IRoute; d = routes[a]; a++) {
+const set_layoutRoute = (routes: IRoute[], allRoutes: IRoute[]) => {
+  for (var a = 0, d: IRoute; d = routes[a]; a++) {
     let path = d.path || '';
     if (d.path) {
-        let ar = path.split('/'), lastPath = ar[ar.length - 1],checkArr:IRoute[]=[];
-        if (lastPath.substring(0, 2) == 'l_') {//如果当前页面是具有私有模板的页面。 
-          ar[ar.length - 1] = lastPath.substring(2);
-          d.path = ar.join('/');
-          ar.pop();
-          findRouteByPath(allRoutes,ar.join('/'),checkArr)
-          if(checkArr.length){ // 如果找到了
-            if (!checkArr[0].routes ) {
-              checkArr[0].routes = [allRoutes[allRoutes.length-1]] ;
-              checkArr[0].exact = false ;
-            }
-              checkArr[0].routes.splice(0, 0, d);
+      let ar = path.split('/'), lastPath = ar[ar.length - 1], checkArr: IRoute[] = [];
+      if (lastPath.substring(0, 2) == 'l_') {//如果当前页面是具有私有模板的页面。 
+        ar[ar.length - 1] = lastPath.substring(2);
+        d.path = ar.join('/');
+        ar.pop();
+        findRouteByPath(allRoutes, ar.join('/'), checkArr)
+        if (checkArr.length) { // 如果找到了
+          if (!checkArr[0].routes) {
+            checkArr[0].routes = [allRoutes[allRoutes.length - 1]];
+            checkArr[0].exact = false;
           }
-          if( remove(routes, (ck:IRoute) =>ck.path === d.path).length ==1){
-            a-- ;
-          }
+          checkArr[0].routes.splice(0, 0, d);
         }
+        if (remove(routes, (ck: IRoute) => ck.path === d.path).length == 1) {
+          a--;
+        }
+      }
     }
     if (d.routes) {
-      set_layoutRoute(d.routes,allRoutes);
+      set_layoutRoute(d.routes, allRoutes);
     }
   }
 }
 
 /**
- *修改路由位置 ， 将没有子路由的放到数组的最前边 , 只是遍历一层
+ *修改路由位置 ， 将没有子路由的放到数组的最前边 , 只是遍历一层 , 并且把层级最多的放在最前边， 比如 /pms/op/order/pro 排在第一  /pms/order/sher 排在第二
  *
  * @param {IRoute[]} routes
  * @returns
  */
-const set_layoutOrder = function (routes:IRoute[]) {
-  var newRoutes = [], newRoutes2 = [],newRoutes3 = [];
+const set_layoutOrder = function (routes: IRoute[]) {
+  var newRoutes = [], newRoutes2 = [], newRoutes3 = [];
   for (var a = 0, d; d = routes[a]; a++) {
-      if (d.routes) {
-          newRoutes2.push(d);
-      }
-      else if(typeof d.path != 'undefined'){
-          newRoutes.push(d);
-      }else{
-          newRoutes3.push(d);
-      }
+    if (d.routes) {
+      newRoutes2.push(d);
+    }
+    else if (typeof d.path != 'undefined') {
+      newRoutes.push(d);
+    } else {
+      newRoutes3.push(d);
+    }
   }
   routes = newRoutes.concat(newRoutes2).concat(newRoutes3);
+  routes = orderBy(routes, function (o) {
+    var path = o.path || '';
+    if (path[path.length - 1] == '/') {
+      path = path.substring(0, path.length - 1)
+    }
+    return path.split('/').length
+  }, ['desc']);
   return routes;
 }
 
 module.exports = {
-    checkRoutesOuterHashPath,
-    addChildRoutes,
-    initParentRoutes,
-    setBlankRoutes,
-    updateRouteLayout,
-    updatePrefix,
-    set_layoutRoute,
-    set_layoutOrder
+  checkRoutesOuterHashPath,
+  addChildRoutes,
+  initParentRoutes,
+  setBlankRoutes,
+  updateRouteLayout,
+  updatePrefix,
+  set_layoutRoute,
+  set_layoutOrder
 }

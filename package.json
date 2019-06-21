@@ -1,6 +1,6 @@
 {
   "name": "umi-plugin-layout",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "解决 umi 只有一个模板 和 所有页面都要使用一个模板的问题",
   "main": "dist/index.js",
   "files": [
