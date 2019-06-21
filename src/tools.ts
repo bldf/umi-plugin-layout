@@ -184,6 +184,25 @@ const set_layoutRoute = (routes:IRoute[],allRoutes:IRoute[])=>{
   }
 }
 
+/**
+ *修改路由位置 ， 将没有子路由的放到数组的最前边 , 只是遍历一层
+ *
+ * @param {IRoute[]} routes
+ * @returns
+ */
+const set_layoutOrder = function (routes:IRoute[]) {
+  let newRoutes = [] , newRoutes2=[];
+  for (var a = 0, d; d = routes[a]; a++) {
+      if(d.routes){
+          newRoutes2.push(d) ; 
+      }else{
+          newRoutes.push(d) ;
+      }
+  }
+  routes = newRoutes.concat(newRoutes2) ;
+  return routes ;
+}
+
 module.exports = {
     checkRoutesOuterHashPath,
     addChildRoutes,
@@ -191,5 +210,6 @@ module.exports = {
     setBlankRoutes,
     updateRouteLayout,
     updatePrefix,
-    set_layoutRoute
+    set_layoutRoute,
+    set_layoutOrder
 }
