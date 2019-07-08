@@ -1,8 +1,6 @@
 import remove from "lodash/remove";
 import orderBy from "lodash/orderBy";
 import { IApi, IRoute } from 'umi-types';
-const path = require('path')
-
 /**
  *判断路由是否包含某个path, 只是做外层验证，子路由不做验证
  *
@@ -42,7 +40,7 @@ const addChildRoutes = (route: IRoute, ro: IRoute): IRoute => {
 const initParentRoutes = (routes: IRoute[], subPath: string): IRoute => {
   let route: IRoute = {
     path: subPath,
-    component: path.resolve('src/layouts/') + subPath,
+    component: ('src/layouts/') + subPath,
     routes: [routes[routes.length - 1]]
   };
   routes.splice(0, 0, route)
