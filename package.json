@@ -6,6 +6,9 @@
   "files": [
     "dist"
   ],
+  "keywords": [
+    "umi-plugin"
+  ],
   "scripts": {
     "test": "node ./unit/tools.spec.js",
     "build":"tsc",
