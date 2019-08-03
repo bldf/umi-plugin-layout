@@ -26,4 +26,4 @@ npm nstall --save-dev umi-plugin-layout
         -   pro.tsx ==// 路由为 /pms/op/pro==(路由模板为 layout/op.tsx)
         -   product
             -   b_index.tsx     ==//路由为  /pms/op/product==
-            -   l_order.tsx  ==// 路由为 /pms/op/order (它的模板是 当前目录的b_index,*b_index是一个新页面没有模板**)==
+            -   l_order.tsx  ==// 路由为 /pms/op/order (它的模板是 当前目录的b_index,*b_index是一个新页面没有模板*)==
